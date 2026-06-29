@@ -1,0 +1,42 @@
+# SafePyramid model config — adjust this to point at the model(s) you want
+# to evaluate, then run:
+#
+#   safepyramid eval     --config configs/models.yaml
+#   safepyramid per-rule --config configs/models.yaml
+#
+# (Or skip the config entirely: `safepyramid eval --model gpt-5.5 --backend openai`.)
+#
+# API keys are read from environment variables ONLY — never put a key here.
+# Each backend reads its standard variable (OPENAI_API_KEY, ANTHROPIC_API_KEY,
+# GOOGLE_API_KEY, XAI_API_KEY, OPENROUTER_API_KEY); point a model at a custom
+# variable with `api_key_env: MY_VAR`.
+
+models:
+  # ---- API model (fill in the AK env var and run) --------------------
+  - name: "gpt-5.5"                 # any API model id
+    type: api
+    backend: openai                 # openai | anthropic | gemini | xai | openrouter | openai_compatible
+    reasoning_effort: "high"        # optional: low | medium | high | xhigh
+
+  # ---- Your own fine-tuned guardrail (HF repo id or local path) ------
+  - name: "your-org/your-guardrail"
+    type: generic
+    # enable_thinking: true         # only if your chat template accepts it
+    cache_dir: "./cache"
+    vllm:
+      max_model_len: 16384
+      gpu_memory_utilization: 0.90
+    generation:
+      max_new_tokens: 4096
+      temperature: 0.0
+      top_p: 1.0
+
+  # ---- An OpenAI-compatible endpoint (vLLM serve, gateways, ...) ------
+  # - name: "my-served-model"
+  #   type: api
+  #   backend: openai_compatible
+  #   base_url: "http://localhost:8000/v1"
+  #   api_key_env: "MY_ENDPOINT_API_KEY"
+
+  # For a fully custom guard (custom prompt / parsing / backend), implement
+  # BaseGuardModel and use the Python API — see examples/custom_guard.py.

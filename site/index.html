@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SafePyramid · A Hierarchical Benchmark for In-context Policy Guardrailing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=IBM+Plex+Sans:wght@400;450;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand">
+      <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 2L22 20H2L12 2Z" fill="var(--blue)"/>
+        <path d="M12 8.4L17.2 17.6H6.8L12 8.4Z" fill="var(--clay)"/>
+        <path d="M12 13.6L14.4 17.6H9.6L12 13.6Z" fill="#fff"/>
+      </svg>
+      SafePyramid
+    </a>
+    <div class="nav-links">
+      <a href="#paradigm">Paradigm</a>
+      <a href="#hierarchy">Hierarchy</a>
+      <a href="#benchmark">Benchmark</a>
+      <a href="#leaderboard">Leaderboard</a>
+      <a href="#findings">Findings</a>
+    </div>
+    <div class="nav-cta">
+      <a href="https://github.com/bytedance/safepyramid" class="btn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18c-4.5 1.5-4.5-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 0 0-6.2 0C6.5 2.3 5.4 2.6 5.4 2.6a4.3 4.3 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V20"/></svg>GitHub</a>
+      <a href="https://huggingface.co/datasets/ByteDance/SafePyramid" class="btn" target="_blank" rel="noopener">🤗 Data</a>
+      <a href="assets/SafePyramid.pdf" class="btn btn-primary" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>Paper</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-left">
+        <div class="eyebrow">Safety Benchmark · 2026</div>
+        <h1 class="hero-title"><span class="grad">SafePyramid</span></h1>
+        <p class="hero-sub">A Hierarchical Benchmark for<br />In-context Policy Guardrailing</p>
+        <p class="hero-abstract">In real-world applications, guardrails are often expected to identify unsafe user&ndash;model interactions according to <em>application-specific safety policies</em>, rather than relying on predefined risk taxonomies. We study this setting under the paradigm of <em>in-context policy guardrailing</em>, where guardrails predict safety violations based on policy specifications provided in context.</p>
+        <div class="hero-authors">
+          <div class="names">Jiacheng&nbsp;Zhang<sup>1,2</sup>, Haoyu&nbsp;He<sup>1,§</sup>, Sen&nbsp;Zhang<sup>1,§</sup>, Shen&nbsp;Wang<sup>1</sup>, Xiaolei&nbsp;Xu<sup>1</sup>,<br>Yuhao&nbsp;Sun<sup>2</sup>, Meng&nbsp;Shen<sup>1</sup>, Feng&nbsp;Liu<sup>2</sup></div>
+          <div class="aff"><sup>1</sup>ByteDance &nbsp;·&nbsp; <sup>2</sup>The University of Melbourne &nbsp;·&nbsp; <sup>§</sup>Corresponding author</div>
+        </div>
+        <div class="hero-actions">
+          <a href="#leaderboard" class="btn btn-primary">Explore the leaderboard →</a>
+          <a href="#paradigm" class="btn">Read the overview</a>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="pyr-stage">
+          <div class="pyr-cap">Exact violated-rule matching <span class="nb">(GPT-5.5)</span></div>
+          <div class="tier tier-2">
+            <div class="lvl">L2 <b>Novel frameworks</b></div>
+            <div class="score"><div class="num">12.9%</div><div class="lab">exact match</div></div>
+          </div>
+          <div class="tier tier-1">
+            <div class="lvl">L1 <b>Rule dependencies</b></div>
+            <div class="score"><div class="num">35.3%</div><div class="lab">exact match</div></div>
+          </div>
+          <div class="tier tier-0">
+            <div class="lvl">L0 <b>Individual rules</b></div>
+            <div class="score"><div class="num">54.0%</div><div class="lab">exact match</div></div>
+          </div>
+          <div class="pyr-axis"><span>EASIER</span><span class="arrow"></span><span>HARDER</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats reveal" style="margin-top:56px">
+      <div class="stat"><div class="v">1,000</div><div class="k">multi-turn conversations</div></div>
+      <div class="stat"><div class="v">10</div><div class="k">safety domains</div></div>
+      <div class="stat"><div class="v">3,000</div><div class="k">application policies</div></div>
+      <div class="stat"><div class="v">61,699</div><div class="k">natural-language rules</div></div>
+      <div class="stat"><div class="v">15</div><div class="k">models evaluated</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ PARADIGM ============ -->
+<section class="block" id="paradigm">
+  <div class="block-head reveal">
+    <div class="eyebrow">The shift</div>
+    <h2 class="section-title">From fixed taxonomies to policies in context</h2>
+    <p class="section-lead">Conventional guardrails map an interaction to a coarse, predefined risk category. <em>In-context policy guardrailing</em> instead expands each risk category into explicit and auditable safety policies provided in context at inference time &mdash; making safety criteria transparent, inspectable, traceable, and accountable, while remaining adaptable to application-specific requirements.</p>
+  </div>
+  <div class="wrap">
+    <figure class="paper-fig reveal">
+      <div class="fig-scroll"><img src="assets/fig1_guardrail.png" alt="Figure 1: Fixed-taxonomy guardrailing versus in-context policy guardrailing" /></div>
+      <figcaption><span class="fl">Figure 1</span> Visual comparison between fixed-taxonomy guardrailing and in-context policy guardrailing. Both paradigms are derived from risk taxonomies, but fixed-taxonomy guardrails map user&ndash;model interactions to coarse risk categories, while in-context policy guardrails expand each risk category into explicit and auditable safety policies provided in context at inference time. Such policies make safety criteria transparent, inspectable, traceable, and accountable, while remaining adaptable to application-specific requirements.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ HIERARCHY ============ -->
+<section class="block alt" id="hierarchy">
+  <div class="block-head reveal">
+    <div class="eyebrow">Three capabilities, three levels</div>
+    <h2 class="section-title">A pyramid of increasing difficulty</h2>
+    <p class="section-lead">Each level keeps the core task — identify every violated rule — while adding one source of complexity. This disentangles <em>where</em> models fail: understanding a rule, resolving how rules interact, or learning an entirely new policy framework from context.</p>
+  </div>
+  <div class="wrap">
+    <div class="levels reveal">
+      <div class="lvl-card l0">
+        <div class="top">
+          <div class="badge">LEVEL 0</div>
+          <h3>Understanding individual rules</h3>
+          <p>Can a model decide whether a single explicit rule is actually supported by conversational evidence?</p>
+        </div>
+        <div class="body">
+          <div class="rule-row"><div class="rule-ico ico-dec">D</div><div><div class="rt">Decisive rules</div><div class="rd">Explicitly allowed or prohibited behaviors with sufficient evidence to judge.</div></div></div>
+          <div class="rule-row"><div class="rule-ico ico-dis">✕</div><div><div class="rt">Distractor rules</div><div class="rd">Topically related but not triggered — tests over-matching on surface similarity.</div></div></div>
+          <div class="lvl-foot"><span>16,114 rules</span><span>16.1 / policy</span></div>
+        </div>
+      </div>
+
+      <div class="lvl-card l1">
+        <div class="top">
+          <div class="badge">LEVEL 1</div>
+          <h3>Resolving rule dependencies</h3>
+          <p>Rules interact: one clause can override or activate another, making violations context-dependent.</p>
+        </div>
+        <div class="body">
+          <div class="rule-row"><div class="rule-ico ico-exc">E</div><div><div class="rt">Exception rules</div><div class="rd">A higher-priority rule that waives or reinterprets a base rule in a given context.</div></div></div>
+          <div class="rule-row"><div class="rule-ico ico-con">C</div><div><div class="rt">Conditional rules</div><div class="rd">Extra requirements that make an otherwise-compliant rule violated when conditions hold.</div></div></div>
+          <div class="lvl-foot"><span>28,717 rules</span><span>28.7 / policy</span></div>
+        </div>
+      </div>
+
+      <div class="lvl-card l2">
+        <div class="top">
+          <div class="badge">LEVEL 2</div>
+          <h3>Adapting to novel frameworks</h3>
+          <p>The same rule structure, rewritten under a fully fictional policy framework with new concepts and terminology.</p>
+        </div>
+        <div class="body">
+          <div class="rule-row"><div class="rule-ico ico-dec">✦</div><div><div class="rt">Fictional framework</div><div class="rd">Prevents solving by prior knowledge — models must infer the framework from context alone.</div></div></div>
+          <div class="rule-row"><div class="rule-ico ico-con">∑</div><div><div class="rt">Preserved structure</div><div class="rd">Keeps L1's decisive, distractor, exception &amp; conditional rules under new semantics.</div></div></div>
+          <div class="lvl-foot"><span>32,982 rules</span><span>33.0 / policy</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BENCHMARK AT A GLANCE ============ -->
+<section class="block" id="benchmark">
+  <div class="block-head reveal">
+    <div class="eyebrow">Coverage &amp; positioning</div>
+    <h2 class="section-title">The benchmark at a glance</h2>
+  </div>
+  <div class="wrap">
+    <div class="glance reveal">
+      <div>
+        <h3 style="font-size:20px">10 domains where policy boundaries vary</h3>
+        <p class="section-lead" style="font-size:15.5px;margin-top:12px">Adapted from AILuminate — chosen because their safety boundaries commonly differ across organizations, user groups, and regulatory contexts. 30 scenarios per domain, 300 in total, instantiated into 1,000 conversations averaging 12.8 turns.</p>
+        <div class="domains-grid">
+          <div class="dom-pill"><span class="di"></span>Academic Integrity</div>
+          <div class="dom-pill"><span class="di"></span>Content Moderation</div>
+          <div class="dom-pill"><span class="di"></span>Critical Infrastructure</div>
+          <div class="dom-pill"><span class="di"></span>Defamation</div>
+          <div class="dom-pill"><span class="di"></span>Discrimination</div>
+          <div class="dom-pill"><span class="di"></span>Fraud</div>
+          <div class="dom-pill"><span class="di"></span>Intellectual Property</div>
+          <div class="dom-pill"><span class="di"></span>Privacy</div>
+          <div class="dom-pill"><span class="di"></span>Sexual Content</div>
+          <div class="dom-pill"><span class="di"></span>Specialized Advice</div>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size:20px">The only safety benchmark to evaluate all three capabilities</h3>
+        <p class="section-lead" style="font-size:15.5px;margin-top:12px">SafePyramid is the only safety benchmark that formulates violated-rule <em>set</em> prediction as the evaluation task and separately evaluates individual rule understanding, rule dependency resolution, and novel context adaptation.</p>
+        <table class="cmp-table">
+          <thead>
+            <tr>
+              <th rowspan="2">Benchmark</th>
+              <th rowspan="2">Safety Domain</th>
+              <th rowspan="2">Multi-turn Interaction</th>
+              <th rowspan="2">Violated-rule Set Prediction</th>
+              <th rowspan="2">In-context Specification</th>
+              <th colspan="3" class="grouphead">Capability Evaluation</th>
+            </tr>
+            <tr>
+              <th>Understanding Individual Rule</th>
+              <th>Resolving Rule Dependency</th>
+              <th>Adapting to Novel Context</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>SafetyBench</td><td class="ck">✓</td><td class="cr">✕</td><td class="cr">✕</td><td class="cr">✕</td><td class="cd">–</td><td class="cd">–</td><td class="cd">–</td></tr>
+            <tr><td>HarmBench</td><td class="ck">✓</td><td class="cr">✕</td><td class="cr">✕</td><td class="cr">✕</td><td class="cd">–</td><td class="cd">–</td><td class="cd">–</td></tr>
+            <tr><td>DynaBench</td><td class="ck">✓</td><td class="ck">✓</td><td class="cr">✕</td><td class="ck">✓</td><td class="ck">✓</td><td class="cr">✕</td><td class="cr">✕</td></tr>
+            <tr><td>IFEval</td><td class="cr">✕</td><td class="cr">✕</td><td class="cr">✕</td><td class="ck">✓</td><td class="ck">✓</td><td class="cr">✕</td><td class="cr">✕</td></tr>
+            <tr><td>LegalBench</td><td class="cr">✕</td><td class="cr">✕</td><td class="cr">✕</td><td class="ck">✓</td><td class="ck">✓</td><td class="cr">✕</td><td class="cr">✕</td></tr>
+            <tr><td>CL-Bench</td><td class="cr">✕</td><td class="ck">✓</td><td class="cr">✕</td><td class="ck">✓</td><td class="cr">✕</td><td class="cr">✕</td><td class="ck">✓</td></tr>
+            <tr class="us"><td>SafePyramid</td><td class="ck">✓</td><td class="ck">✓</td><td class="ck">✓</td><td class="ck">✓</td><td class="ck">✓</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+          </tbody>
+        </table>
+        <p class="lb-note" style="margin-top:12px">Quality assured by four frontier generators (Grok-4.1, GPT-5.4, Gemini-3.1-Pro, Claude-Opus-4.6), cross-model validation, and two rounds of expert review — with &gt;90% human–LLM agreement.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LEADERBOARD ============ -->
+<section class="block alt" id="leaderboard">
+  <div class="block-head reveal">
+    <div class="eyebrow">Interactive results</div>
+    <h2 class="section-title">Leaderboard</h2>
+    <p class="section-lead">15 models — 10 frontier LLMs and 5 policy-configurable guard models. Switch the evaluation protocol, choose a metric, drill into any difficulty level, and filter by domain. Click a column to sort.</p>
+  </div>
+  <div class="wrap">
+    <div class="lb-shell reveal">
+      <div class="lb-controls">
+        <div class="ctrl">
+          <span class="lab">Protocol</span>
+          <div class="seg" id="seg-protocol">
+            <button data-v="policy" class="on">Per-policy</button>
+            <button data-v="rule">Per-rule</button>
+          </div>
+        </div>
+        <div class="ctrl">
+          <span class="lab">Metric</span>
+          <div class="seg" id="seg-metric">
+            <button data-v="RMR" class="on">RMR ↑</button>
+            <button data-v="RMR@1.0">Exact ↑</button>
+            <button data-v="RDR">RDR ↓</button>
+          </div>
+        </div>
+        <div class="ctrl">
+          <span class="lab">Level</span>
+          <div class="seg" id="seg-level">
+            <button data-v="Avg" class="on">Avg</button>
+            <button data-v="L0">L0</button>
+            <button data-v="L1">L1</button>
+            <button data-v="L2">L2</button>
+          </div>
+        </div>
+        <div class="ctrl">
+          <span class="lab">Domain</span>
+          <select class="dom-select" id="dom-select"></select>
+        </div>
+        <div class="lb-meta" id="lb-meta"></div>
+      </div>
+      <div class="lb-tablewrap">
+        <table class="lb">
+          <thead id="lb-head"></thead>
+          <tbody id="lb-body"></tbody>
+        </table>
+      </div>
+      <p class="lb-note" id="lb-foot"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINDINGS ============ -->
+<section class="block" id="findings">
+  <div class="block-head reveal">
+    <div class="eyebrow">What we learned</div>
+    <h2 class="section-title">In-context policy guardrailing is far from solved</h2>
+  </div>
+  <div class="wrap">
+    <div class="findings reveal">
+      <div class="find-card">
+        <div class="fnum">01 · DIFFICULTY HIERARCHY</div>
+        <h3>Guardrails struggle most with novel policy frameworks</h3>
+        <p>Across nearly all models, performance decreases as the benchmark moves from L0 to L2, and the difficulty is especially pronounced at L2. The gap between L0 and L2 is consistent across models, indicating that the benchmark hierarchy captures a shared difficulty pattern rather than an artifact of a single model family.</p>
+        <div class="find-stat"><span class="big">−41 pts</span><span class="lab">GPT-5.5 exact match, L0 → L2 (54.0% → 12.9%)</span></div>
+      </div>
+
+      <div class="find-card">
+        <div class="fnum">02 · COMPOSITION BOTTLENECK</div>
+        <h3>Per-rule gains reveal a policy-composition bottleneck</h3>
+        <p>Performance improves when the task is decomposed into per-rule classification, especially for guard models. Frontier LLMs are less bottlenecked by processing the full policy context, whereas smaller guard models benefit substantially when the relevant policy context is pre-organized. The main bottleneck is not rule understanding alone, but full-policy composition.</p>
+        <div class="mini-chart" id="chart-perrule"></div>
+      </div>
+
+      <div class="find-card">
+        <div class="fnum">03 · REASONING EFFORT</div>
+        <h3>Higher reasoning effort helps more on complex policies</h3>
+        <p>Comparing GPT-5.5 under low and xhigh reasoning effort, the gain is small on L0, where rules are independently classifiable, but much larger on L1 and L2. Extra reasoning budget mainly helps with complex rule dependencies and novel policy frameworks, rather than independent rule understanding.</p>
+        <div class="mini-chart" id="chart-effort"></div>
+      </div>
+
+      <div class="find-card">
+        <div class="fnum">04 · AGENTIC HARNESS</div>
+        <h3>Agentic harnesses improve in-context policy guardrailing</h3>
+        <p>Off-the-shelf agentic harnesses consistently improve per-policy evaluation without safety-specific tuning. The strongest result is achieved by Claude-Opus-4.7 with Claude Code.</p>
+        <div class="find-stat"><span class="big">60.4%</span><span class="lab">avg RMR with Claude Code (+5.2 pts), RDR cut to 17.4%</span></div>
+      </div>
+
+      <div class="find-card wide">
+        <div class="fnum">05 · ERROR ATTRIBUTION</div>
+        <h3>Dominant errors shift from decisive to exception to conditional rules</h3>
+        <p>At L0, errors are dominated by <b>decisive</b> rules &mdash; models match local keywords in the conversation but fail to check the rule's actual scope, stance, or speaker attribution. At L1, the dominant error source shifts to <b>exception</b> rules, as models over-trigger exceptions. At L2, <b>conditional</b>-rule errors become more prominent: under novel frameworks, models incorrectly treat the conditional rules themselves as violated rules, instead of using them to decide whether the corresponding base rules are violated.</p>
+        <div class="mini-chart" id="chart-errors" style="margin-top:24px"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CITATION ============ -->
+<section class="block alt">
+  <div class="block-head">
+    <div class="eyebrow">Cite this work</div>
+    <h2 class="section-title">BibTeX</h2>
+  </div>
+  <div class="wrap">
+    <div class="cite-box reveal">
+      <div class="cite-head"><span>SafePyramid · preprint 2026</span><span class="cite-copy" id="cite-copy">⧉ Copy</span></div>
+      <pre id="cite-pre">@misc<span class="k">{zhang2026safepyramid,</span>
+      <span class="k">title</span>=<span class="v">{SafePyramid: A Hierarchical Benchmark for In-context Policy Guardrailing}</span>,
+      <span class="k">author</span>=<span class="v">{Jiacheng Zhang and Haoyu He and Sen Zhang and Shen Wang and Xiaolei Xu and Yuhao Sun and Meng Shen and Feng Liu}</span>,
+      <span class="k">year</span>=<span class="v">{2026}</span>,
+      <span class="k">eprint</span>=<span class="v">{}</span>,
+      <span class="k">archivePrefix</span>=<span class="v">{}</span>,
+      <span class="k">primaryClass</span>=<span class="v">{}</span>,
+      <span class="k">url</span>=<span class="v">{}</span>,
+<span class="k">}</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-auth">
+        <b>SafePyramid</b> — a hierarchical benchmark for in-context policy guardrailing.<br/>
+        Jiacheng Zhang · Haoyu He · Sen Zhang · Shen Wang · Xiaolei Xu · Yuhao Sun · Meng Shen · Feng Liu<br/>
+        ByteDance &amp; The University of Melbourne.
+      </div>
+    </div>
+    <div class="foot-fine">All numbers from the SafePyramid preprint. Per-domain values extracted from the paper's figures and validated against its aggregate tables.</div>
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

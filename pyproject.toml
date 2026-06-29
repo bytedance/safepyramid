@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "safepyramid"
+version = "0.1.0"
+description = "SafePyramid: evaluate LLMs and guardrail models on policy-grounded guardrailing (RMR / RMR@1.0 / RDR)"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+authors = [{ name = "SafePyramid Team" }]
+keywords = ["llm", "safety", "guardrail", "benchmark", "evaluation"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "pyyaml",
+    "huggingface_hub",
+    "openai>=1.40",
+]
+
+[project.optional-dependencies]
+# Extra API backends (openai, openrouter, gemini and any OpenAI-compatible
+# endpoint work with the base `openai` dependency; these add native SDKs).
+anthropic = ["anthropic>=0.40"]
+xai = ["xai-sdk"]
+# Local guardrail inference (the `generic` guard, vLLM-served)
+local = [
+    "torch",
+    "vllm",
+]
+all = [
+    "safepyramid[anthropic,xai,local]",
+]
+
+[project.scripts]
+safepyramid = "safepyramid.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/bytedance/safepyramid"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["safepyramid*"]
