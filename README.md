@@ -12,7 +12,7 @@
 
 [![Website](https://img.shields.io/badge/🌐_Website-SafePyramid-1f6feb)](https://bytedance.github.io/safepyramid/)
 [![Hugging Face](https://img.shields.io/badge/🤗_Hugging_Face-Dataset-ffce1c)](https://huggingface.co/datasets/ByteDance/SafePyramid)
-[![Paper](https://img.shields.io/badge/📄_Paper-PDF-b31b1b)](assets/SafePyramid.pdf)
+[![arXiv](https://img.shields.io/badge/arXiv-2606.29887-b31b1b)](https://arxiv.org/abs/2606.29887)
 [![License](https://img.shields.io/badge/License-Apache_2.0-green)](LICENSE)
 
 </div>
@@ -230,10 +230,10 @@ API keys live in environment variables only; `.gitignore` blocks the common secr
       title={SafePyramid: A Hierarchical Benchmark for In-context Policy Guardrailing}, 
       author={Jiacheng Zhang and Haoyu He and Sen Zhang and Shen Wang and Xiaolei Xu and Yuhao Sun and Meng Shen and Feng Liu},
       year={2026},
-      eprint={}, 
-      archivePrefix={}, 
-      primaryClass={}, 
-      url={}, 
+      eprint={2606.29887},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2606.29887}, 
 }
 ```
 
