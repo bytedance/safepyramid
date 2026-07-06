@@ -193,6 +193,24 @@ safepyramid score first_run.jsonl refused_retry.jsonl
 safepyramid score per_rule_run.jsonl --per-rule
 ```
 
+### Bring your own predictions
+
+You don't have to run inference through this harness at all. Generate predictions **however you like** — any model (open or closed), framework, or even human annotation — write them to a JSONL, and score them with the same leaderboard yardstick. Each line is one case and needs just two fields:
+
+```json
+{"id": "crit-001-l1", "violated_rules": [4, 7, 14]}
+```
+
+- **`id`** — the case id, matching the dataset.
+- **`violated_rules`** — your predicted set of violated rule numbers (integers).
+- Optional: `"refused": true` or `"parse_failed": true` to exclude a case from the metric denominators (metrics are refusal-aware). Cases with no line are counted as excluded.
+
+```bash
+safepyramid score my_predictions.jsonl        # → RMR / RMR@1.0 / RDR, per level
+```
+
+> ⚠️ **Use the same rule numbering as the dataset you score against.** `violated_rules` numbers must match the `ground_truth_violations` / rubric numbering of the exact dataset version — so generate predictions against the current dataset (**v1.1**), not an older copy.
+
 ## Data format
 
 Each case (both JSON files, 9 fields):
