@@ -17,6 +17,8 @@
 
 </div>
 
+> **New (Sep 2026)** — [**Jev-1.13.0**](https://typesafe.ai/), TypeSafe AI's *System One* model, has been evaluated on the full benchmark under the per-rule protocol: **54.8 RMR** at **$1.19** per pass over the benchmark, with **0% refusals**. See [Jev on SafePyramid](#jev-on-safepyramid) below and the [project page](https://bytedance.github.io/safepyramid/#jev).
+
 In real-world deployments, guardrails are expected to flag unsafe user–model interactions according to **application-specific safety policies**, not a fixed, predefined risk taxonomy. SafePyramid studies this setting — **in-context policy guardrailing** — where a model is given a policy *in context* at inference time and must predict the **set of violated rules** for a conversation.
 
 Both paradigms derive from risk taxonomies, but they apply them differently. Fixed-taxonomy guardrailing maps an interaction to a coarse risk category; in-context policy guardrailing instead expands each category into an explicit, auditable policy supplied at inference time and asks the model for the precise set of violated rules — keeping safety criteria transparent, inspectable, traceable, and accountable while remaining adaptable to each application's requirements.
@@ -235,7 +237,26 @@ A note on prompting: the evaluation prompt deliberately contains **only** the vi
 
 ## A glimpse of the results
 
-In-context policy guardrailing is far from solved. Exact-match accuracy drops sharply up the pyramid — e.g. GPT-5.5 goes **54.0% (L0) → 35.3% (L1) → 12.9% (L2)** — and the gap is consistent across model families. See the [project page](https://bytedance.github.io/safepyramid/) for the interactive leaderboard across 15 models, both protocols, all metrics, levels, and domains.
+In-context policy guardrailing is far from solved. Exact-match accuracy drops sharply up the pyramid — e.g. GPT-5.5 goes **54.0% (L0) → 35.3% (L1) → 12.9% (L2)** — and the gap is consistent across model families. See the [project page](https://bytedance.github.io/safepyramid/) for the interactive leaderboard across 16 models, both protocols, all metrics, levels, and domains.
+
+## Jev on SafePyramid
+
+[Jev](https://typesafe.ai/) (TypeSafe AI, `jev-1.13.0`) is a *System One* model: instead of generating text it returns typed decisions with calibrated confidence, so it fits the **per-rule** protocol directly — every (case, rule) pair becomes one binary question, the answers are thresholded at confidence **θ = 0.5** (majority vote over **K = 3** samples), and the resulting `violated_rules` sets are scored with the same RMR / RMR@1.0 / RDR yardstick as every other row. The GPT-5.5 row below is its per-rule leaderboard entry.
+
+| Model (per-rule) | L0 · RMR / exact / RDR | L1 | L2 | Avg |
+|------------------|------------------------|----|----|-----|
+| GPT-5.5 | 64.5 / 47.8 / 13.1 | 69.9 / 51.5 / 11.3 | 32.1 / 12.1 / 27.1 | **55.5** / 37.1 / 18.1 |
+| Jev-1.13.0 | 67.3 / 48.7 / 12.3 | 64.0 / 40.7 / 13.5 | 32.9 / 12.0 / 28.8 | **54.8** / 33.8 / 19.1 |
+
+| | Jev-1.13.0 |
+|---|---|
+| Cases / calls per pass | 3,000 / 3,000 (28.3M input tokens) |
+| API cost | **$1.19** per pass (3 passes for K = 3: $3.57) |
+| Wall-clock | ≈43 min per pass (3 passes: 130 min) |
+| Refusal rate | 0.0% |
+| 95% CI, RMR@1.0 (all) | 32.2 – 35.6 |
+
+On the per-rule leaderboard Jev sits 0.7 RMR behind GPT-5.5 (54.8 vs 55.5) — ahead on L0 and L2, behind on L1, where rule dependencies must be resolved. Its exact match peaks at the default threshold (θ = 0.5 → 33.8%; θ = 0.2 → 14.9%, θ = 0.8 → 16.0%), i.e. its confidence is well calibrated and needs no threshold search. This is a community run on dataset **v1.1**, not a paper result; the full breakdown, including the threshold sweep, is on the [project page](https://bytedance.github.io/safepyramid/#jev).
 
 ## Security
 

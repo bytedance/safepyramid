@@ -11,17 +11,19 @@ const CODE = {
   'Doubao-Seed-2.0-Pro':'豆','Gemini-3.5-Flash':'Gm','Hunyuan-HY3-Preview':'HY',
   'Qwen-3.6-Max-Preview':'Qw','GLM-5.1':'GL','Grok-4.3':'Gr',
   'GPT-OSS-Safeguard-120B':'120','GPT-OSS-Safeguard-20B':'20','FlexGuard-Qwen3-8B':'FG',
-  'DynaGuard-8B':'Dy','ShieldLM-14B-Qwen':'SL'
+  'DynaGuard-8B':'Dy','ShieldLM-14B-Qwen':'SL','Jev-1.13.0':'Jv'
 };
 const ORGC = {
   'OpenAI':'#0B8C72','Anthropic':'#C2683B','Google':'#3B7DD8','DeepSeek':'#3A56C8',
   'Moonshot AI':'#5B49C9','ByteDance':'#2C73BD','Tencent':'#1FA4C9','Alibaba':'#D9772E',
-  'Zhipu AI':'#4A6FA5','xAI':'#363B43','HK PolyU':'#6E7C36','University of Maryland':'#9A2F3A','Tsinghua University':'#7E3417'
+  'Zhipu AI':'#4A6FA5','xAI':'#363B43','HK PolyU':'#6E7C36','University of Maryland':'#9A2F3A','Tsinghua University':'#7E3417',
+  'TypeSafe AI':'#15171C'
 };
+const TYPE_LABEL = { frontier:'LLM', guard:'guard', s1:'System One' };
 const ORGLOGO = {
   'OpenAI':'openai','Anthropic':'claude','Moonshot AI':'kimi','DeepSeek':'deepseek',
   'ByteDance':'doubao','Google':'gemini','Tencent':'hunyuan','Alibaba':'qwen',
-  'Zhipu AI':'zai','xAI':'grok'
+  'Zhipu AI':'zai','xAI':'grok','TypeSafe AI':'typesafe'
 };
 
 const state = { protocol:'policy', metric:'RMR', level:'Avg', domain:'All' };
@@ -39,8 +41,10 @@ function getLevels(model){
   if(!pd){ return {L0:null,L1:null,L2:null,Avg:null}; }
   const di = DOMAINS.indexOf(state.domain);
   const m = pd[state.metric];
+  // models with only a per-domain aggregate (no per-level breakdown) carry an Avg array and null levels
+  if(!m.L0){ return {L0:null,L1:null,L2:null,Avg:(m.Avg? m.Avg[di] : null)}; }
   const l0=m.L0[di], l1=m.L1[di], l2=m.L2[di];
-  return {L0:l0,L1:l1,L2:l2,Avg:Math.round(((l0+l1+l2)/3)*10)/10};
+  return {L0:l0,L1:l1,L2:l2,Avg:(m.Avg? m.Avg[di] : Math.round(((l0+l1+l2)/3)*10)/10)};
 }
 function models(){ return Object.keys(state.protocol==='policy'?D.overallPolicy:D.overallRule); }
 
@@ -84,7 +88,14 @@ function render(){
   let rows = models().map(m=>({ model:m, vals:getLevels(m), meta:D.META[m] }));
   // when a specific domain is selected, drop models with no per-domain data (e.g. GPT-OSS guards under per-policy)
   if(state.domain!=='All'){
-    rows = rows.filter(r=>r.vals.L0!=null || r.vals.L1!=null || r.vals.L2!=null);
+    rows = rows.filter(r=>r.vals.L0!=null || r.vals.L1!=null || r.vals.L2!=null || r.vals.Avg!=null);
+  }
+  // the Jev callout: under per-policy it offers the switch to the board Jev is on
+  const calloutLink=document.querySelector('#lb-callout .lb-callout-link');
+  if(calloutLink){
+    if(state.protocol==='rule'){ calloutLink.textContent='See the full Jev breakdown →'; calloutLink.href='#jev'; calloutLink.onclick=null; }
+    else { calloutLink.textContent='Switch to per-rule to see it →'; calloutLink.href='#leaderboard';
+      calloutLink.onclick=(e)=>{ e.preventDefault(); document.querySelector('#seg-protocol button[data-v="rule"]').click(); }; }
   }
 
   // sort by active level; nulls last
@@ -113,13 +124,16 @@ function render(){
   body.innerHTML = rows.map((r,i)=>{
     const c = ORGC[r.meta.org]||'#555';
     const isGuard = r.meta.type==='guard';
+    const typeCls = {frontier:'tc-frontier',guard:'tc-guard',s1:'tc-s1'}[r.meta.type]||'tc-frontier';
+    const typeLabel = TYPE_LABEL[r.meta.type]||'LLM';
+    const isNew = !!r.meta.new;
     const cells = LEVELS.map(L=>{
       const v=r.vals[L];
       const active = L===lv;
       if(v==null) return `<td class="${L==='Avg'?'':'hide-sm'} dim"><span class="dash">—</span></td>`;
       if(active){
         const w = Math.max(2, Math.min(100, v))+'%';
-        const barClass = lower()?'clay':'';
+        const barClass = lower()?'clay':(isNew?'gold':'');
         const isBest = Math.abs(v-best)<0.001;
         return `<td><div class="bar-wrap">
           <div class="bar-track"><div class="bar-fill ${barClass}" style="width:${w}"></div></div>
@@ -132,12 +146,12 @@ function render(){
     const logo = ORGLOGO[r.meta.org];
     const tag = logo
       ? `<span class="mtag logo"><img src="assets/logos/${logo}.svg" alt="${r.meta.org}" loading="lazy" /></span>`
-      : `<span class="mtag" style="background:${c}">${CODE[r.model]||''}</span>`;
-    return `<tr>
+      : `<span class="mtag ${isNew?'jev':''}" style="background:${c}">${CODE[r.model]||''}</span>`;
+    return `<tr class="${isNew?'is-new':''}">
       <td class="${rankCls}">${i+1}</td>
       <td class="cmodel"><div class="modelcell">
         ${tag}
-        <span class="minfo"><span class="mn">${r.model}<span class="typechip ${isGuard?'tc-guard':'tc-frontier'}">${isGuard?'guard':'LLM'}</span></span><span class="mo">${r.meta.org}</span></span>
+        <span class="minfo"><span class="mn">${r.model}<span class="typechip ${typeCls}">${typeLabel}</span>${isNew?'<span class="newchip">New</span>':''}</span><span class="mo">${r.meta.org}</span></span>
       </div></td>
       ${cells}
     </tr>`;
@@ -157,9 +171,11 @@ function render(){
   if(state.domain!=='All'){
     extra=' &nbsp;·&nbsp; Per-domain values extracted from the paper figures; <b>Avg</b> is the mean of L0–L2 for this domain.';
     if(state.protocol==='policy') extra+=' The GPT-OSS-Safeguard models are shown only under the per-rule protocol, where the paper provides their per-domain breakdowns.';
+    if(state.protocol==='rule' && metric!=='RMR@1.0') extra+=' <b>Jev-1.13.0</b> reports a per-domain aggregate only for this metric; its per-level breakdown is available under Exact match.';
   } else {
     extra=' &nbsp;·&nbsp; <b>Avg</b> is the published case-weighted aggregate.';
   }
+  if(state.protocol==='rule') extra+=' &nbsp;·&nbsp; <b>Jev-1.13.0</b>: community run, decomposition protocol (K=3, θ=0.5), 3,000 cases, exported 2026-09-22.';
   document.getElementById('lb-foot').innerHTML = notes[metric]+extra;
 }
 

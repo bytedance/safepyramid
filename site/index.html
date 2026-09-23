@@ -11,6 +11,15 @@
 </head>
 <body>
 
+<!-- ============ ANNOUNCEMENT ============ -->
+<div class="announce">
+  <a href="#jev" class="announce-inner">
+    <span class="an-tag"><span class="an-dot"></span>New</span>
+    <span class="an-text">Jev-1.13.0 evaluated on SafePyramid &mdash; the full per-rule benchmark for <b>$1.19</b> a pass, zero refusals.</span>
+    <span class="an-link">See the results &rarr;</span>
+  </a>
+</div>
+
 <!-- ============ NAV ============ -->
 <nav class="nav">
   <div class="nav-inner">
@@ -27,6 +36,7 @@
       <a href="#hierarchy">Hierarchy</a>
       <a href="#benchmark">Benchmark</a>
       <a href="#leaderboard">Leaderboard</a>
+      <a href="#jev" class="nav-jev">Jev <span class="nav-new">new</span></a>
       <a href="#findings">Findings</a>
     </div>
     <div class="nav-cta">
@@ -81,7 +91,7 @@
       <div class="stat"><div class="v">10</div><div class="k">safety domains</div></div>
       <div class="stat"><div class="v">3,000</div><div class="k">application policies</div></div>
       <div class="stat"><div class="v">61,699</div><div class="k">natural-language rules</div></div>
-      <div class="stat"><div class="v">15</div><div class="k">models evaluated</div></div>
+      <div class="stat"><div class="v">16 <span class="stat-plus">+1 Jev</span></div><div class="k">models evaluated</div></div>
     </div>
   </div>
 </header>
@@ -216,9 +226,14 @@
   <div class="block-head reveal">
     <div class="eyebrow">Interactive results</div>
     <h2 class="section-title">Leaderboard</h2>
-    <p class="section-lead">15 models — 10 frontier LLMs and 5 policy-configurable guard models. Switch the evaluation protocol, choose a metric, drill into any difficulty level, and filter by domain. Click a column to sort.</p>
+    <p class="section-lead">16 models — 10 frontier LLMs, 5 policy-configurable guard models, and one System One model. Switch the evaluation protocol, choose a metric, drill into any difficulty level, and filter by domain. Click a column to sort.</p>
   </div>
   <div class="wrap">
+    <div class="lb-callout reveal" id="lb-callout">
+      <span class="lb-callout-tag">New · Sep 2026</span>
+      <span class="lb-callout-text"><b>Jev-1.13.0</b> is on the board &mdash; the first <b>System One</b> model on SafePyramid. All 3,000 policies under the per-rule protocol, <b>$1.19</b> a pass, <b>zero refusals</b>. Community run on dataset v1.1.</span>
+      <a href="#jev" class="lb-callout-link">See the full Jev breakdown &rarr;</a>
+    </div>
     <div class="lb-shell reveal">
       <div class="lb-controls">
         <div class="ctrl">
@@ -262,8 +277,58 @@
   </div>
 </section>
 
+<!-- ============ JEV SPOTLIGHT ============ -->
+<section class="block jev" id="jev">
+  <div class="block-head reveal">
+    <div class="eyebrow gold">Community evaluation · September 2026</div>
+    <h2 class="section-title">3,000 policies. 3,000 calls. <span class="gold-ink">$1.19.</span></h2>
+    <p class="section-lead"><b>Jev</b>, TypeSafe AI's <em>System One</em> model, answers with typed decisions and calibrated confidence instead of text. We ran <code class="inline-code">jev-1.13.0</code> through the full SafePyramid per-rule protocol: every rule of every policy at all three levels. It lands within a point of GPT-5.5's per-rule RMR on the leaderboard &mdash; with zero refusals, zero API errors, and a bill measured in cents.</p>
+  </div>
+  <div class="wrap">
+
+    <div class="jev-stage reveal">
+      <div class="jev-stage-left">
+        <div class="jev-id">
+          <span class="jev-newchip"><span class="dot"></span>New entry</span>
+          <span class="jev-idline">jev-1.13.0 &nbsp;·&nbsp; TypeSafe AI &nbsp;·&nbsp; System One model</span>
+        </div>
+        <div class="jev-hero">
+          <div class="jev-hero-num" id="jev-cost">$1.19</div>
+          <div class="jev-hero-lab" id="jev-cost-lab">API cost for one pass over the entire benchmark &mdash; 3,000 conversation&ndash;policy cases, 3,000 calls, 28.3M input tokens. The reported K&nbsp;=&nbsp;3 result takes three passes: $3.57.</div>
+        </div>
+        <div class="jev-stats" id="jev-stats"></div>
+      </div>
+      <div class="jev-stage-right">
+        <div class="pyr-cap jev-pyr-cap">Rule matching rate by level <span class="nb">(Jev-1.13.0)</span></div>
+        <div class="tier jev-tier jev-tier-2"><div class="lvl">L2 <b>Novel frameworks</b></div><div class="score"><div class="num" data-jev="L2.rmr_avg"></div><div class="lab">RMR</div></div></div>
+        <div class="tier jev-tier jev-tier-1"><div class="lvl">L1 <b>Rule dependencies</b></div><div class="score"><div class="num" data-jev="L1.rmr_avg"></div><div class="lab">RMR</div></div></div>
+        <div class="tier jev-tier jev-tier-0"><div class="lvl">L0 <b>Individual rules</b></div><div class="score"><div class="num" data-jev="L0.rmr_avg"></div><div class="lab">RMR</div></div></div>
+        <div class="pyr-axis jev-axis"><span>EASIER</span><span class="arrow"></span><span>HARDER</span></div>
+        <div class="jev-exact" id="jev-exact"></div>
+      </div>
+    </div>
+
+    <div class="jev-cards reveal">
+      <div class="jev-card">
+        <div class="jev-cnum">01 · Head-to-head</div>
+        <h3>Head-to-head with GPT-5.5 on the per-rule leaderboard</h3>
+        <div class="jev-legend"><span><i style="background:var(--gold)"></i>Jev-1.13.0</span><span><i style="background:var(--blue)"></i>GPT-5.5</span></div>
+        <div class="jev-chart" id="jev-chart-h2h"></div>
+        <p id="jev-h2h-foot"></p>
+      </div>
+      <div class="jev-card">
+        <div class="jev-cnum">02 · Calibration</div>
+        <h3>Best at the untuned threshold</h3>
+        <div class="jev-chart" id="jev-chart-theta"></div>
+        <p>Exact match across confidence thresholds θ. The peak sits at 0.5, the default, so no threshold search is needed. Pushing θ to 0.2 or 0.8 costs roughly 18 points.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <!-- ============ FINDINGS ============ -->
-<section class="block" id="findings">
+<section class="block alt" id="findings">
   <div class="block-head reveal">
     <div class="eyebrow">What we learned</div>
     <h2 class="section-title">In-context policy guardrailing is far from solved</h2>
@@ -309,7 +374,7 @@
 </section>
 
 <!-- ============ CITATION ============ -->
-<section class="block alt">
+<section class="block">
   <div class="block-head">
     <div class="eyebrow">Cite this work</div>
     <h2 class="section-title">BibTeX</h2>
@@ -340,11 +405,12 @@
         ByteDance &amp; The University of Melbourne.
       </div>
     </div>
-    <div class="foot-fine">All numbers from the SafePyramid preprint. Per-domain values extracted from the paper's figures and validated against its aggregate tables.</div>
   </div>
 </footer>
 
 <script src="data.js"></script>
+<script src="jev-data.js"></script>
 <script src="app.js"></script>
+<script src="jev.js"></script>
 </body>
 </html>
